@@ -33,7 +33,7 @@ namespace TestTemplate.Areas.Admin.Controllers
         [HttpPost]
         public ActionResult ThemMoi(CoSo model, HttpPostedFileBase fileAnh)
         {
-            if (fileAnh.ContentLength > 0)
+            if (fileAnh?.ContentLength > 0)
             {
                 string rootFolder = Server.MapPath("/Content/img/");
                 string pathImage = rootFolder + fileAnh.FileName;
@@ -41,15 +41,37 @@ namespace TestTemplate.Areas.Admin.Controllers
                 model.HinhAnh = fileAnh.FileName;
             }
 
-            if (string.IsNullOrEmpty(model.MaCS) == true || string.IsNullOrEmpty(model.TenCS) == true ||
-                string.IsNullOrEmpty(model.HinhAnh) == true || string.IsNullOrEmpty(model.LinkMap) == true ||
-                    string.IsNullOrEmpty(model.MucGia) == true || string.IsNullOrEmpty(model.DiaChi) == true)
+            if (string.IsNullOrEmpty(model.MaCS) || model.MaCS.Length > 10)
             {
-                ModelState.AddModelError("", "Thiếu thông tin");
+                ModelState.AddModelError("MaCS", "Bạn đã nhập thiếu mã cơ sở và không được vượt quá 10 kí tự.");
+            }
+            if (string.IsNullOrEmpty(model.TenCS))
+            {
+                ModelState.AddModelError("TenCS", "Bạn đã nhập thiếu tên cơ sở.");
+            }
+            if (string.IsNullOrEmpty(model.HinhAnh))
+            {
+                ModelState.AddModelError("HinhAnh", "Bạn đã nhập thiếu hình ảnh.");
+            }
+            if (string.IsNullOrEmpty(model.LinkMap))
+            {
+                ModelState.AddModelError("LinkMap", "Bạn đã nhập thiếu liên kết bản đồ.");
+            }
+            if (string.IsNullOrEmpty(model.MucGia))
+            {
+                ModelState.AddModelError("MucGia", "Bạn đã nhập thiếu mức giá.");
+            }
+            if (string.IsNullOrEmpty(model.DiaChi))
+            {
+                ModelState.AddModelError("DiaChi", "Bạn đã nhập thiếu địa chỉ.");
+            }
+
+            // Nếu có lỗi thì trả về view với model
+            if (!ModelState.IsValid)
+            {
                 return View(model);
             }
 
-           
             try
             {
                 db.CoSoes.Add(model);

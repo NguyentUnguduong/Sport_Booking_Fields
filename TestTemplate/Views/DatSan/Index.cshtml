@@ -1,28 +1,28 @@
-﻿@model TestTemplate.Models.DatSan
+﻿@*
+     @model TestTemplate.Models.DatSan
+    @{
+        ViewBag.Title = "Đặt sân";
+        Layout = "~/Views/Shared/LayoutDatSan.cshtml";
+        TestTemplate.Models.QLDSEntities db = new TestTemplate.Models.QLDSEntities();
+        var idcoso = Session["id_coso"] as string;
+        var kh = Session["user"] as TestTemplate.Models.user_KhachHang;
+    }
 
-@{
-    ViewBag.Title = "Đặt sân";
-    Layout = "~/Views/Shared/LayoutDatSan.cshtml";
-    TestTemplate.Models.QLDSEntities db = new TestTemplate.Models.QLDSEntities();
-    var idcoso = Session["id_coso"] as string;
-
-    var kh = Session["user"] as TestTemplate.Models.user_KhachHang;
-}
     @using (Html.BeginForm())
     {
         @Html.AntiForgeryToken()
-        <div style="margin: 100px 0px">
-            <div class="container">
-                <div class="form-horizontal">
-                    <h4> @Session["ten_coso"] </h4>
-                    <hr />
-
+        <div class="container py-5">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white text-center">
+                    <h4 class="mb-0">@Session["ten_coso"]</h4>
+                </div>
+                <div class="card-body">
                     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-                    <div class="form-group">
-                        <label class="control-label col-md-2" style="margin-top: 10px">Loại sân</label>
+                    <div class="mb-3 row">
+                        <label class="col-md-2 col-form-label fw-bold">Loại sân</label>
                         <div class="col-md-10">
-                            <select name="ma_danhmuc" class="form-control">
+                            <select name="ma_danhmuc" class="form-select">
                                 @foreach (var dm in db.DanhMucSans.Where(c => c.MaCS == idcoso).ToList())
                                 {
                                     <option value="@dm.MaDanhMuc">@dm.LoaiSan</option>
@@ -30,41 +30,41 @@
                             </select>
                         </div>
                     </div>
+
                     <input type="hidden" id="ma_danhmuc" name="ma_danhmuc" />
 
-                    <div class="form-group">
-                        <label class="control-label col-md-2" style="margin-top: 10px">Ngày đặt sân</label>
+                    <div class="mb-3 row">
+                        <label class="col-md-2 col-form-label fw-bold">Ngày đặt sân</label>
                         <div class="col-md-10">
                             @Html.TextBoxFor(m => m.ngayDatSan, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
                             @Html.ValidationMessageFor(model => model.ngayDatSan, "", new { @class = "text-danger" })
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label class="control-label col-md-2" style="margin-top: 10px">Giờ bắt đầu</label>
+                    <div class="mb-3 row">
+                        <label class="col-md-2 col-form-label fw-bold">Giờ bắt đầu</label>
                         <div class="col-md-10">
                             @Html.TextBoxFor(m => m.gioBatDau, "{0:HH:mm}", new { @class = "form-control", type = "time" })
                             @Html.ValidationMessageFor(model => model.gioBatDau, "", new { @class = "text-danger" })
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label class="control-label col-md-2" style="margin-top: 10px">Giờ kết thúc</label>
+                    <div class="mb-3 row">
+                        <label class="col-md-2 col-form-label fw-bold">Giờ kết thúc</label>
                         <div class="col-md-10">
                             @Html.TextBoxFor(m => m.gioKetThuc, "{0:HH:mm}", new { @class = "form-control", type = "time" })
                             @Html.ValidationMessageFor(model => model.gioKetThuc, "", new { @class = "text-danger" })
                         </div>
                     </div>
 
-                    <div class="form-group">
+                    <div class="text-center mt-4">
                         @if (Session["user"] != null)
                         {
-                            <div class="col-md-offset-2 col-md-10" style="margin-top: 20px">
-                                <input type="submit" value="Đặt sân" class="btn btn-primary" />
-                            </div>
+                            <button type="submit" class="btn btn-primary px-4">Đặt sân</button>
                         }
-                        else { 
-                            <h4 style="margin-top: 10px; color: red">Bạn cần đăng nhập để đặt sân</h4>
+                        else
+                        {
+                            <p class="text-danger fw-bold">Bạn cần đăng nhập để đặt sân</p>
                         }
                     </div>
                 </div>
@@ -73,12 +73,211 @@
     }
 
 
+    <script>
+        $(document).ready(function () {
+            $("select[name='ma_danhmuc']").change(function () {
+                var selectedSan = $(this).val();
+                $("#MaDanhMuc").val(selectedSan);
+            });
+        });
+    </script>
+*@
+
+@model TestTemplate.Models.DatSan
+@{
+    ViewBag.Title = "Đặt sân";
+    Layout = "~/Views/Shared/LayoutDatSan.cshtml";
+    TestTemplate.Models.QLDSEntities db = new TestTemplate.Models.QLDSEntities();
+    var idcoso = Session["id_coso"] as string;
+    var kh = Session["user"] as TestTemplate.Models.user_KhachHang;
+
+    // Prepare court types
+    var loaiSans = db.DanhMucSans
+        .Where(c => c.MaCS == idcoso)
+        .Select(dm => new
+        {
+            MaDanhMuc = dm.MaDanhMuc,
+            LoaiSan = dm.LoaiSan
+        })
+        .ToList();
+
+    // Prepare courts with prices
+    var sans = db.Sans
+        .Where(s => s.DanhMucSan.MaCS == idcoso)
+        .Select(s => new
+        {
+            MaDanhMuc = s.MaDanhMuc,
+            GiaSan = s.GiaSan ?? 0
+        })
+        .ToList();
+}
+@using (Html.BeginForm())
+{
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+    @Html.AntiForgeryToken()
+    <div class="container py-5">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white text-center">
+                <h4 class="mb-0">@Session["ten_coso"]</h4>
+            </div>
+            <div class="card-body">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                <div class="mb-3 row">
+                    <label class="col-md-2 col-form-label fw-bold">Loại sân</label>
+                    <div class="col-md-10">
+                        <select name="ma_danhmuc" class="form-select" id="loai-san-select">
+                            <option value="">Chọn loại sân</option>
+                            @foreach (var dm in loaiSans)
+                            {
+                                <option value="@dm.MaDanhMuc">@dm.LoaiSan</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+
+                <div class="mb-3 row">
+                    <label class="col-md-2 col-form-label fw-bold">Giá sân</label>
+                    <div class="col-md-10">
+                        <select name="gia_san" class="form-select" id="gia-san-select" disabled>
+                            <option value="">Vui lòng chọn loại sân trước</option>
+                        </select>
+                    </div>
+                </div>
+
+                <input type="hidden" id="ma_danhmuc" name="ma_danhmuc" />
+                <input type="hidden" id="selected_gia_san" name="selected_gia_san" />
+
+                <div class="mb-3 row">
+                    <label class="col-md-2 col-form-label fw-bold">Ngày đặt sân</label>
+                    <div class="col-md-10">
+                        @Html.TextBoxFor(m => m.ngayDatSan, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+                        @Html.ValidationMessageFor(model => model.ngayDatSan, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <label class="col-md-2 col-form-label fw-bold">Giờ bắt đầu</label>
+                    <div class="col-md-10">
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-clock"></i></span>
+                            @Html.TextBoxFor(m => m.gioBatDau, "{0:HH:mm}", new { @class = "form-control", type = "time" })
+                        </div>
+                        @Html.ValidationMessageFor(model => model.gioBatDau, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="mb-3 row">
+                    <label class="col-md-2 col-form-label fw-bold">Giờ kết thúc</label>
+                    <div class="col-md-10">
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-clock"></i></span>
+                            @Html.TextBoxFor(m => m.gioKetThuc, "{0:HH:mm}", new { @class = "form-control", type = "time" })
+                        </div>
+                        @Html.ValidationMessageFor(model => model.gioKetThuc, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="mb-3 row" id="price-preview" style="display:none;">
+                    <label class="col-md-2 col-form-label fw-bold">Ước tính chi phí</label>
+                    <div class="col-md-10">
+                        <p class="form-control-plaintext fw-bold text-primary" id="price-display"></p>
+                    </div>
+                </div>
+                <div class="text-center mt-4">
+                    @if (Session["user"] != null)
+                    {
+                        <button type="submit" class="btn btn-primary px-4">Đặt sân</button>
+                    }
+                    else
+                    {
+                        <p class="text-danger fw-bold">Bạn cần đăng nhập để đặt sân</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function () {
-        $("select[name='ma_danhmuc']").change(function () {
-            var selectedSan = $(this).val();
-            $("#MaDanhMuc").val(selectedSan);
+        // Prepare court prices data
+        var courtPrices = @Html.Raw(Json.Encode(sans));
+
+        // Handle court type selection
+        $("#loai-san-select").change(function () {
+            var selectedMaDanhMuc = $(this).val();
+            var $giaSanSelect = $("#gia-san-select");
+
+            // Reset price dropdown
+            $giaSanSelect.empty();
+            $("#ma_danhmuc").val(selectedMaDanhMuc);
+
+            if (selectedMaDanhMuc) {
+                // Filter prices for selected court type
+                var filteredPrices = courtPrices.filter(function (court) {
+                    return court.MaDanhMuc.toLocaleString() === selectedMaDanhMuc;
+                });
+                console.log("Filtered Prices:", filteredPrices);
+
+                // Populate price dropdown
+                if (filteredPrices.length > 0) {
+                    $giaSanSelect.prop('disabled', false);
+                    filteredPrices.forEach(function(court) {
+                        $giaSanSelect.append(
+                            $('<option></option>')
+                                .val(court.GiaSan)
+                                .text(court.GiaSan.toLocaleString() + " VNĐ/giờ")
+                        );
+                    });
+                } else {
+                    $giaSanSelect.append('<option value="">Không có giá sân</option>');
+                    $giaSanSelect.prop('disabled', true);
+                }
+            } else {
+                $giaSanSelect.append('<option value="">Vui lòng chọn loại sân trước</option>');
+                $giaSanSelect.prop('disabled', true);
+            }
+
+            // Reset price preview
+            $("#price-preview").hide();
         });
+
+        // Handle price selection
+        $("#gia-san-select").change(function() {
+            $("#selected_gia_san").val($(this).val());
+            calculatePrice();
+        });
+
+        // Price calculation preview
+        function calculatePrice() {
+            var startTime = $("#gioBatDau").val();
+            var endTime = $("#gioKetThuc").val();
+            var pricePerHour = parseFloat($("#gia-san-select").val()) || 0;
+
+            if (startTime && endTime) {
+                var start = new Date("2023-01-01T" + startTime);
+                var end = new Date("2023-01-01T" + endTime);
+                var hoursDiff = (end - start) / (1000 * 60 * 60);
+
+                if (hoursDiff > 0) {
+                    var totalPrice = hoursDiff * pricePerHour;
+
+                    $("#price-display").text(
+                        hoursDiff.toFixed(1) + " giờ x " +
+                        pricePerHour.toLocaleString() + " VNĐ = " +
+                        totalPrice.toLocaleString() + " VNĐ"
+                    );
+                    $("#price-preview").show();
+                } else {
+                    $("#price-preview").hide();
+                }
+            } else {
+                $("#price-preview").hide();
+            }
+        }
+
+        // Attach price calculation to time inputs
+        $("#gioBatDau, #gioKetThuc").on('change', calculatePrice);
     });
 </script>
-
+}
