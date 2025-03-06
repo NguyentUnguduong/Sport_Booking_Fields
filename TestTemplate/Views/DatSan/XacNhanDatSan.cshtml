@@ -3,24 +3,43 @@
     ViewBag.Title = "XacNhanDatSan";
     Layout = "~/Views/Shared/LayoutDatSan.cshtml";
     var loaisan = TempData["Loaisan"] as string;
-}
+    var giaSan = TempData["GiaSan"] as double? ?? 0;
 
+    // Calculate total hours
+    DateTime gioBatDau, gioKetThuc;
+    DateTime.TryParse(Model.ngayDatSan + " " + Model.gioBatDau, out gioBatDau);
+    DateTime.TryParse(Model.ngayDatSan + " " + Model.gioKetThuc, out gioKetThuc);
+    double soGio = (gioKetThuc - gioBatDau).TotalHours;
+
+    // Calculate total price
+    double tongTien = giaSan * soGio;
+}
 
 <div class="container">
     <h4>Thông tin đặt sân:</h4>
-    <p>@Session["ten_coso"]</p>
-    <p>Loại sân: @loaisan</p>
-    <p>Mã Sân: @Model.ma_San</p>
-    <p>Thời gian trận đấu: @Model.ngayDatSan @Model.gioBatDau @Model.gioKetThuc</p>
+    <p><strong>Cơ sở:</strong> @Session["ten_coso"]</p>
+    <p><strong>Loại sân:</strong> @loaisan</p>
+    <p><strong>Mã Sân:</strong> @Model.ma_San</p>
+    <p><strong>Ngày đặt sân:</strong> @Convert.ToDateTime(Model.ngayDatSan).ToString("dd/MM/yyyy")</p>
+    <p><strong>Thời gian trận đấu:</strong> @Model.gioBatDau - @Model.gioKetThuc</p>
+    <p><strong>Số giờ đặt:</strong> @soGio.ToString("0.0") giờ</p>
+    <p><strong>Giá sân:</strong> @String.Format("{0:N0}", giaSan) VNĐ/giờ</p>
+    <p><strong>Tổng tiền:</strong> @String.Format("{0:N0}", tongTien) VNĐ</p>
 
     <form method="post" action="@Url.Action("XacNhanDatSan", "DatSan")">
         @Html.HiddenFor(model => model.ma_San)
         @Html.HiddenFor(model => model.ngayDatSan)
         @Html.HiddenFor(model => model.gioBatDau)
         @Html.HiddenFor(model => model.gioKetThuc)
+        @Html.HiddenFor(model => model.ma_danhmuc)
+        @Html.HiddenFor(model => model.ma_KH)
+        <input type="hidden" name="giaSan" value="@giaSan" />
 
-        <input type="submit" name="confirmed" value="Xác nhận" />
-        <a href="@Url.Action("Index", "DatSan", new { id_coso = Session["id_coso"], ten_coso = Session["ten_coso"] })">Hủy bỏ</a>
+        <div class="row mt-4">
+            <div class="col">
+                <input type="submit" name="confirmed" value="Xác nhận" class="btn btn-primary" />
+                <a href="@Url.Action("Index", "DatSan", new { id_coso = Session["id_coso"], ten_coso = Session["ten_coso"] })" class="btn btn-secondary">Hủy bỏ</a>
+            </div>
+        </div>
     </form>
 </div>
-
