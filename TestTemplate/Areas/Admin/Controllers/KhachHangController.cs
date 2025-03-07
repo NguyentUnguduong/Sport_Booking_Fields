@@ -70,7 +70,12 @@ namespace TestTemplate.Areas.Admin.Controllers
 
         public ActionResult HoaDon(string id, int? page)
         {
-            List<HoaDon> dsHoaDon = db.HoaDons.ToList();
+
+            if (string.IsNullOrEmpty(id))
+            {
+                return RedirectToAction("DanhSachKhachHang");
+            }
+            List<HoaDon> dsHoaDon = db.HoaDons.Where(hd => hd.MaKhachHang == id).ToList();
             int PageSize = 6;
             int PageNumber = (page ?? 1);
             return View(dsHoaDon.OrderBy(n => n.MaHoaDon).ToPagedList(PageNumber, PageSize));
@@ -108,7 +113,7 @@ namespace TestTemplate.Areas.Admin.Controllers
 
         public ActionResult CTHD(string id, int? page)
         {
-            List<CTHD> dsCTHDs = db.CTHDs.ToList();
+            List<CTHD> dsCTHDs = db.CTHDs.Where(cthd => cthd.MaHoaDon == id).ToList();
             int PageSize = 6;
             int PageNumber = (page ?? 1);
             return View(dsCTHDs.OrderBy(n => n.MaCTHD).ToPagedList(PageNumber, PageSize));
@@ -116,7 +121,12 @@ namespace TestTemplate.Areas.Admin.Controllers
 
         public ActionResult DanhSachLichDat(string id, int? page)
         {
-            List<LichDat> dsLichDat = db.LichDats.ToList();
+
+            if (string.IsNullOrEmpty(id))
+            {
+                return RedirectToAction("DanhSachLichDat");
+            }
+            List<LichDat> dsLichDat = db.LichDats.Where(ld => ld.MaKhachHang == id).ToList();
             //Tạo biến số sản phẩm trên trang
             int PageSize = 6;
             // Tạo biến số trang hiện tại

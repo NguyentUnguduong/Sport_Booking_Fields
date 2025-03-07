@@ -14,5 +14,13 @@ namespace TestTemplate.Models
         public string ngayDatSan { get; set; } // Thêm thuộc tính ngày đặt sân kiểu string
         public string gioBatDau { get; set; } // Thêm thuộc tính giờ bắt đầu kiểu string
         public string gioKetThuc { get; set; }
+
+        //Thông tin thanh toán
+        public bool trangThaiThanhToan { get; set; } // Đã thanh toán (true) hoặc chưa (false)
+        public string phuongThucThanhToan { get; set; } // Tiền mặt, chuyển khoản, ví điện tử
+        public decimal soTienThanhToan { get; set; } // Số tiền đã thanh toán
+        public DateTime? thoiGianThanhToan { get; set; } // Thời gian thanh toán
+        public string maGiaoDich { get; set; } // Mã giao dịch thanh toán (nếu
+
     }
 }

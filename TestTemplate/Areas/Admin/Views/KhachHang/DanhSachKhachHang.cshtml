@@ -8,45 +8,131 @@
     Layout = "~/Areas/Admin/Views/Shared/LayoutAdmin.cshtml";
 }
 
-<h2  style="margin-left: 450px">Danh sách khách hàng</h2>
+@*
 
-<table class="table">
-    <tr>
-        <th>
-            <label class="control-label col-md-10 ">Họ tên</label>
-        </th>
-        <th>
-            <label class="control-label col-md-13 ">Số điện thoại</label>
-        </th>
-        <th>
-            <label class="control-label col-md-13 ">Email</label>
-        </th>
-        <th></th>
-    </tr>
+    <h2  style="margin-left: 450px">Danh sách khách hàng</h2>
 
-    @foreach (var item in Model)
-    {
+    <table class="table">
         <tr>
-            <td style="padding: 0px 30px">
-                @Html.DisplayFor(modelItem => item.HoTen)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.SoDienThoai)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-
-            <td>
-                @Html.ActionLink("Xem lịch đặt", "DanhSachLichDat", new { id = item.MaKH }) |
-                @Html.ActionLink("Xem hóa đơn", "HoaDon", new { id = item.MaKH }) |
-                @Html.ActionLink("Cập nhật", "CapNhat", new { id = item.MaKH }) |
-                @Html.ActionLink("Xóa", "Xoa", new { id = item.MaKH })
-            </td>
+            <th>
+                <label class="control-label col-md-10 ">Họ tên</label>
+            </th>
+            <th>
+                <label class="control-label col-md-13 ">Số điện thoại</label>
+            </th>
+            <th>
+                <label class="control-label col-md-13 ">Email</label>
+            </th>
+            <th></th>
         </tr>
-    }
-</table>
 
-<div class="dlink">
-    @Html.PagedListPager(Model, page => Url.Action("DanhSachKhachHang", new { page = page }))
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td style="padding: 0px 30px">
+                    @Html.DisplayFor(modelItem => item.HoTen)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SoDienThoai)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+
+                <td>
+                    @Html.ActionLink("Xem lịch đặt", "DanhSachLichDat", new { id = item.MaKH }) |
+                    @Html.ActionLink("Xem hóa đơn", "HoaDon", new { id = item.MaKH }) |
+                    @Html.ActionLink("Cập nhật", "CapNhat", new { id = item.MaKH }) |
+                    @Html.ActionLink("Xóa", "Xoa", new { id = item.MaKH })
+                </td>
+            </tr>
+        }
+    </table>
+
+    <div class="dlink">
+        @Html.PagedListPager(Model, page => Url.Action("DanhSachKhachHang", new { page = page }))
+    </div>*@
+
+
+<style>
+    .table-container {
+        max-width: 80%;
+        margin: auto;
+        background: #ffffff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+        .table th, .table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .table th {
+            background-color: #4CAF50;
+            color: white;
+            text-transform: uppercase;
+        }
+
+        .table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .table tr:hover {
+            background-color: #ddd;
+        }
+
+    .actions a {
+        margin: 0 5px;
+        color: #007bff;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+        .actions a:hover {
+            text-decoration: underline;
+        }
+
+    .pagination {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+    }
+</style>
+
+<div class="table-container">
+    <h2 class="text-center text-xl font-bold text-gray-800">Danh sách khách hàng</h2>
+    <table class="table">
+        <tr>
+            <th>Họ tên</th>
+            <th>Số điện thoại</th>
+            <th>Email</th>
+            <th>Thao tác</th>
+        </tr>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.HoTen)</td>
+                <td>@Html.DisplayFor(modelItem => item.SoDienThoai)</td>
+                <td>@Html.DisplayFor(modelItem => item.Email)</td>
+                <td class="actions">
+                    @Html.ActionLink("Xem lịch đặt", "DanhSachLichDat", new { id = item.MaKH }) |
+                    @Html.ActionLink("Xem hóa đơn", "HoaDon", new { id = item.MaKH }) |
+                    @Html.ActionLink("Cập nhật", "CapNhat", new { id = item.MaKH }) |
+                    @Html.ActionLink("Xóa", "Xoa", new { id = item.MaKH }, new { @class = "text-red-500" })
+                </td>
+            </tr>
+        }
+    </table>
+    <div class="pagination">
+        @Html.PagedListPager(Model, page => Url.Action("DanhSachKhachHang", new { page = page }))
+    </div>
 </div>

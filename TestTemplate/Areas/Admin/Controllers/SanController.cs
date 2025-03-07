@@ -32,11 +32,27 @@ namespace TestTemplate.Areas.Admin.Controllers
         [HttpPost]
         public ActionResult ThemMoi(San san)
         {
+            if(san.MaSan.Length >= 10)
+            {
+                ModelState.AddModelError("", "Mã sân không được vượt quá 10 kí tự");
+                return View(san);
+            }
+
             if((san.SoSan == null) || (san.SoSan <= 0) || san.GiaSan == null || string.IsNullOrEmpty(san.MaSan))
             {
                 ModelState.AddModelError("", "Thông tin không đúng");
                 return View(san);
             }
+
+            //var checkMaSosan = db.Sans.Any(s => s.MaSan == san.MaSan);
+
+            //if(checkMaSosan)
+            //{
+            //    ModelState.AddModelError("", "Mã số sân mà bạn đặt đã bị trùng.");
+            //    return View(san);
+            //}
+
+            
 
             try
             {

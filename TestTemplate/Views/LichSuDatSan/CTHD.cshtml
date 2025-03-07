@@ -7,33 +7,35 @@
     Layout = "~/Views/Shared/Layout_HoaDon.cshtml";
 }
 
-<h2 style="margin-left: 500px">Chi tiết hóa đơn</h2>
+@*
 
-<table class="table table-bordered" style="width: 96%; margin-left: 30px; margin-bottom: 500px">
-    <tr style="text-align: center">
-        <th>
-            <label class="control-label col-md-10 ">Mã CTHD</label>
-        </th>
-        <th>
-            <label class="control-label col-md-10 ">Mã HĐ</label>
-        </th>
-        <th>
-            <label class="control-label col-md-10 ">Ngày đặt</label>
-        </th>
-        <th>
-            <label class="control-label col-md-10 ">Loại sân</label>
-        </th>
-        <th>
-            <label class="control-label col-md-10 ">Số sân</label>
-        </th>
-        <th>
-            <label class="control-label col-md-10 ">Số giờ đặt (tiếng)</label>
-        </th>
-        <th>
-            <label class="control-label col-md-10 ">Giá tiền (VNĐ)</label>
-        </th>
-        @*<th></th>*@
-    </tr>
+        <h2 style="margin-left: 500px">Chi tiết hóa đơn</h2>
+
+        <table class="table table-bordered" style="width: 96%; margin-left: 30px; margin-bottom: 500px">
+            <tr style="text-align: center">
+                <th>
+                    <label class="control-label col-md-10 ">Mã CTHD</label>
+                </th>
+                <th>
+                    <label class="control-label col-md-10 ">Mã HĐ</label>
+                </th>
+                <th>
+                    <label class="control-label col-md-10 ">Ngày đặt</label>
+                </th>
+                <th>
+                    <label class="control-label col-md-10 ">Loại sân</label>
+                </th>
+                <th>
+                    <label class="control-label col-md-10 ">Số sân</label>
+                </th>
+                <th>
+                    <label class="control-label col-md-10 ">Số giờ đặt (tiếng)</label>
+                </th>
+                <th>
+                    <label class="control-label col-md-10 ">Giá tiền (VNĐ)</label>
+                </th>
+                @*<th></th>
+        </tr>
 
     @foreach (var item in Model)
     {
@@ -65,8 +67,72 @@
             </td>
 
         </tr>
-     }
-</table>
+    }
+    </table>
+*@
 
+<div class="container mt-5 d-flex justify-content-center">
+<div class="card shadow-lg border-0 rounded-4" style="width: 50rem;">
+    <div class="card-header bg-gradient text-white text-center py-4" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+        <h2 class="mb-0 fw-bold">🧾 Chi Tiết Hóa Đơn</h2>
+    </div>
+    <div class="card-body p-4">
+        <table class="table table-bordered text-center align-middle">
+            <thead class="bg-dark text-white">
+                <tr>
+                    <th>Mã CTHD</th>
+                    <th>Mã HĐ</th>
+                    <th>Ngày Đặt</th>
+                    <th>Loại Sân</th>
+                    <th>Số Sân</th>
+                    <th>Số Giờ Đặt</th>
+                    <th>Giá Tiền (VNĐ)</th>
+                </tr>
+            </thead>
+            <tbody class="bg-light">
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.MaCTHD</td>
+                        <td>@item.MaHoaDon</td>
+                        <td>
+                            @{
+                                DateTime dt = DateTime.ParseExact(item.NgayDat.ToString(), "dd/MM/yyyy hh:mm:ss", CultureInfo.InvariantCulture);
+                                string s = dt.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
+                            }
+                            @s
+                        </td>
+                        <td>@item.LoaiSan</td>
+                        <td>@item.SoSan</td>
+                        <td>@item.SoGioDat</td>
+                        <td class="fw-bold text-success">@String.Format("{0:N0} VNĐ", item.GiaTien)</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <div class="text-end mt-4">
+            <button class="btn btn-primary btn-lg shadow-sm">
+                <i class="fas fa-print"></i> In Hóa Đơn
+            </button>
+        </div>
+    </div>
+</div>
+</div>
 
+<style>
+    .table-bordered th, .table-bordered td {
+        padding: 12px;
+    }
+
+    .card {
+        box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .bg-gradient {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+</style>
+
+<!-- Thêm FontAwesome nếu chưa có -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 

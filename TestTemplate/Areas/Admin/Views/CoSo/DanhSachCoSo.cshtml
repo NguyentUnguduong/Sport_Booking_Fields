@@ -15,7 +15,7 @@
 </p>
 
 @* Thể hiện dữ liệu thông qua control WebGrid *@
-@*@grid.GetHtml(
+@*grid.GetHtml(
     tableStyle: "gridTable",
     headerStyle: "gridHead",
     footerStyle: "gridFooter",
@@ -24,8 +24,193 @@
     columns: grid.Columns(
         grid.Column(),
         grid.Column(),
-        grid.Column(),) 
-    )*@
+        grid.Column(),)
+    ) *@
+<style>
+    /* Định dạng chung */
+    body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* Tiêu đề trang hiện đại */
+h2 {
+    font-size: 28px;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 25px;
+    position: relative;
+    padding-bottom: 10px;
+}
+
+h2:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 70px;
+    height: 3px;
+    background: #3498db;
+}
+
+/* Nút thêm mới */
+a[href*="ThemMoi"] {
+    display: inline-block;
+    padding: 10px 16px;
+    background-color: #27ae60;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: 500;
+    margin-bottom: 20px;
+    transition: all 0.3s ease;
+}
+
+a[href*="ThemMoi"]:hover {
+    background-color: #2ecc71;
+    box-shadow: 0 4px 8px rgba(39, 174, 96, 0.3);
+    transform: translateY(-2px);
+}
+
+/* Bảng dữ liệu */
+.table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: white;
+    box-shadow: 0 1px 15px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 30px;
+}
+
+.table th {
+    background-color: #3498db;
+    color: white;
+    padding: 14px 20px;
+    text-align: left;
+    font-weight: 600;
+    border: none;
+}
+
+.table td {
+    padding: 14px 20px;
+    border-bottom: 1px solid #e9ecef;
+    vertical-align: middle;
+}
+
+.table tr:last-child td {
+    border-bottom: none;
+}
+
+.table tr:hover {
+    background-color: #f1f8ff;
+}
+
+/* Hình ảnh cơ sở */
+.img-responsive {
+    max-width: 120px;
+    height: auto;
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Liên kết hành động */
+td a {
+    display: inline-block;
+    padding: 6px 12px;
+    margin: 2px;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    font-weight: 500;
+}
+
+a[href*="CapNhat"] {
+    background-color: #f39c12;
+    color: white;
+}
+
+a[href*="Xoa"] {
+    background-color: #e74c3c;
+    color: white;
+}
+
+a[href*="CapNhat"]:hover {
+    background-color: #f1c40f;
+    box-shadow: 0 2px 5px rgba(243, 156, 18, 0.3);
+}
+
+a[href*="Xoa"]:hover {
+    background-color: #c0392b;
+    box-shadow: 0 2px 5px rgba(231, 76, 60, 0.3);
+}
+
+/* Phân trang */
+.dlink {
+    display: flex;
+    justify-content: center;
+    margin: 30px 0;
+}
+
+.pagination {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.pagination li {
+    display: inline-block;
+}
+
+.pagination li a,
+.pagination li span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+    height: 40px;
+    padding: 0 12px;
+    background-color: white;
+    color: #3498db;
+    text-decoration: none;
+    border: 1px solid #e9ecef;
+    border-left: none;
+    transition: all 0.2s ease;
+}
+
+.pagination li:first-child a {
+    border-left: 1px solid #e9ecef;
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+}
+
+.pagination li:last-child a {
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+
+.pagination li.active a {
+    background-color: #3498db;
+    color: white;
+    cursor: default;
+}
+
+.pagination li a:hover:not(.active) {
+    background-color: #e9ecef;
+}
+
+
+
+</style>
+
+
 <table class="table table-bordered">
     <tr>
         <th>
@@ -75,3 +260,5 @@
 <div class="dlink">
     @Html.PagedListPager(Model, page => Url.Action("DanhSachCoSo", new { page = page }))
 </div>
+
+
