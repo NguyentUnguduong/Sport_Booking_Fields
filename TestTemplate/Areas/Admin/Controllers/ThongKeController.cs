@@ -16,7 +16,7 @@ namespace TestTemplate.Areas.Admin.Controllers
             ViewBag.TongDoanhThu = ThongKeDoanhThu();
             ViewBag.SLKH = ThongKeKhachHang();
             ViewBag.sanDaDat = ThongKeSoSan();
-            ViewBag.SoLuotTruyCap = HttpContext.Application["LuotTruyCap"].ToString();
+            ViewBag.SoLuotTruyCap = HttpContext.Application["LuotTruyCap"];
             return View();
         }
 

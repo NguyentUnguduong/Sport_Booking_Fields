@@ -23,10 +23,17 @@ namespace TestTemplate
             Application["LuotTruyCap"] = 0;
         }
 
-        protected void Session_Star()
+        protected void Session_Start()
         {
             Application.Lock(); // Đồng bộ hóa
-            Application["LuotTruyCap"] = (int)Application["LuotTruyCap"] + 1;
+            if (Application["LuotTruyCap"] == null)
+            {
+                Application["LuotTruyCap"] = 1;
+            }
+            else
+            {
+                Application["LuotTruyCap"] = (int)Application["LuotTruyCap"] + 1;
+            }
             Application.UnLock();
         }
 

@@ -8,7 +8,367 @@
     TestTemplate.Models.QLDSEntities db = new TestTemplate.Models.QLDSEntities();
     //var kh = Session["user"] as TestTemplate.Models.user_KhachHang;
 }
+<style>
 
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f8f9fa;
+        color: #333;
+        line-height: 1.6;
+    }
+
+    /* Tiêu đề trang */
+    h2 {
+        font-size: 28px;
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 30px;
+        position: relative;
+        padding-bottom: 10px;
+        text-align: center;
+        margin-left: 0 !important; /* Ghi đè inline style */
+        margin-top: 40px !important; /* Điều chỉnh margin-top */
+    }
+
+        h2:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: #3498db;
+        }
+
+    /* Container chính */
+    .booking-history-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    /* Thông báo lỗi */
+    .text-danger {
+        color: #e74c3c;
+        font-size: 14px;
+        margin-bottom: 15px;
+        text-align: center;
+    }
+
+    /* Bảng dữ liệu */
+    .table {
+        width: 100% !important; /* Ghi đè inline style */
+        border-collapse: separate;
+        border-spacing: 0;
+        background: white;
+        box-shadow: 0 1px 15px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        overflow: hidden;
+        margin: 0 auto 50px auto !important; /* Ghi đè inline style */
+    }
+
+        .table th {
+            background-color: #3498db;
+            color: white;
+            padding: 14px 20px;
+            text-align: center;
+            font-weight: 600;
+            border: none;
+        }
+
+        .table td {
+            padding: 14px 20px;
+            border-bottom: 1px solid #e9ecef;
+            vertical-align: middle;
+            text-align: center;
+        }
+
+        .table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .table tr:hover {
+            background-color: #f1f8ff;
+        }
+
+        /* Định dạng mã đặt sân */
+        .table td:first-child {
+            font-weight: 600;
+            font-family: monospace;
+            font-size: 16px;
+        }
+
+        /* Định dạng thời gian */
+        .table td:nth-child(3), .table td:nth-child(4) {
+            white-space: nowrap;
+            font-family: monospace;
+        }
+
+        /* Định dạng trạng thái */
+        .table td:nth-child(5) {
+            font-weight: 500;
+        }
+
+            /* Màu sắc cho các trạng thái */
+            .table td:nth-child(5):contains("Chưa diễn ra") {
+                color: #f39c12;
+            }
+
+            .table td:nth-child(5):contains("Đã diễn ra") {
+                color: #27ae60;
+            }
+
+            .table td:nth-child(5):contains("Đã hủy") {
+                color: #e74c3c;
+            }
+
+    /* Nút hành động */
+    .btn {
+        display: inline-block;
+        padding: 8px 16px;
+        border: none;
+        border-radius: 4px;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .btn-danger {
+        background-color: #e74c3c;
+        color: white;
+    }
+
+    .btn-info {
+        background-color: #3498db;
+        color: white;
+    }
+
+    .btn-danger:hover {
+        background-color: #c0392b;
+        box-shadow: 0 4px 8px rgba(231, 76, 60, 0.3);
+        transform: translateY(-2px);
+    }
+
+    .btn-info:hover {
+        background-color: #2980b9;
+        box-shadow: 0 4px 8px rgba(52, 152, 219, 0.3);
+        transform: translateY(-2px);
+    }
+
+    /* Thẻ trạng thái */
+    .status-tag {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 30px;
+        font-size: 0.9em;
+        font-weight: 500;
+    }
+
+    .status-pending {
+        background-color: rgba(243, 156, 18, 0.15);
+        color: #f39c12;
+    }
+
+    .status-completed {
+        background-color: rgba(39, 174, 96, 0.15);
+        color: #27ae60;
+    }
+
+    .status-cancelled {
+        background-color: rgba(231, 76, 60, 0.15);
+        color: #e74c3c;
+    }
+
+    /* CSS cho trang lịch sử đặt sân - phù hợp với style các trang quản lý khác */
+
+/* Thiết lập chung cho trang */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* Tiêu đề trang */
+h2 {
+    font-size: 28px;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 30px;
+    position: relative;
+    padding-bottom: 10px;
+    text-align: center;
+    margin-left: 0 !important; /* Ghi đè inline style */
+    margin-top: 40px !important; /* Điều chỉnh margin-top */
+}
+
+h2:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 3px;
+    background: #3498db;
+}
+
+/* Container chính */
+.booking-history-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Thông báo lỗi */
+.text-danger {
+    color: #e74c3c;
+    font-size: 14px;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+/* Bảng dữ liệu */
+.table {
+    width: 100% !important; /* Ghi đè inline style */
+    border-collapse: separate;
+    border-spacing: 0;
+    background: white;
+    box-shadow: 0 1px 15px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 0 auto 50px auto !important; /* Ghi đè inline style */
+}
+
+.table th {
+    background-color: #3498db;
+    color: white;
+    padding: 14px 20px;
+    text-align: center;
+    font-weight: 600;
+    border: none;
+}
+
+.table td {
+    padding: 14px 20px;
+    border-bottom: 1px solid #e9ecef;
+    vertical-align: middle;
+    text-align: center;
+}
+
+.table tr:last-child td {
+    border-bottom: none;
+}
+
+.table tr:hover {
+    background-color: #f1f8ff;
+}
+
+/* Định dạng mã đặt sân */
+.table td:first-child {
+    font-weight: 600;
+    font-family: monospace;
+    font-size: 16px;
+}
+
+/* Định dạng thời gian */
+.table td:nth-child(3), .table td:nth-child(4) {
+    white-space: nowrap;
+    font-family: monospace;
+}
+
+/* Định dạng trạng thái */
+.table td:nth-child(5) {
+    font-weight: 500;
+}
+
+/* Màu sắc cho các trạng thái */
+.table td:nth-child(5):contains("Chưa diễn ra") {
+    color: #f39c12;
+}
+
+.table td:nth-child(5):contains("Đã diễn ra") {
+    color: #27ae60;
+}
+
+.table td:nth-child(5):contains("Đã hủy") {
+    color: #e74c3c;
+}
+
+/* Nút hành động */
+.btn {
+    display: inline-block;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.btn-danger {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.btn-info {
+    background-color: #3498db;
+    color: white;
+}
+
+.btn-danger:hover {
+    background-color: #c0392b;
+    box-shadow: 0 4px 8px rgba(231, 76, 60, 0.3);
+    transform: translateY(-2px);
+}
+
+.btn-info:hover {
+    background-color: #2980b9;
+    box-shadow: 0 4px 8px rgba(52, 152, 219, 0.3);
+    transform: translateY(-2px);
+}
+
+/* Thẻ trạng thái */
+.status-tag {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 30px;
+    font-size: 0.9em;
+    font-weight: 500;
+}
+
+.status-pending {
+    background-color: rgba(243, 156, 18, 0.15);
+    color: #f39c12;
+}
+
+.status-completed {
+    background-color: rgba(39, 174, 96, 0.15);
+    color: #27ae60;
+}
+
+.status-cancelled {
+    background-color: rgba(231, 76, 60, 0.15);
+    color: #e74c3c;
+}
+
+/* Responsive styling */
+
+
+/* Hiệu ứng làm nổi bật hàng được chọn */
+.table tr.selected {
+    background-color: #ecf0f1;
+}
+
+/* JavaScript để nâng cao trải nghiệm người dùng */
+
+
+
+
+</style>
 
 <h2 style="margin-left: 500px; margin-top: 50px; margin-bottom: 20px">Lịch sử đặt sân</h2>
 <div>
@@ -80,5 +440,39 @@
     }
 
 </table>
+
+<script>
+
+    document.addEventListener('DOMContentLoaded', function () {
+        // Áp dụng thẻ trạng thái
+        document.querySelectorAll('td:nth-child(5)').forEach(function (cell) {
+            var status = cell.textContent.trim();
+            var className = '';
+
+            if (status.includes('Chưa diễn ra')) {
+                className = 'status-pending';
+            } else if (status.includes('Đã diễn ra')) {
+                className = 'status-completed';
+            } else if (status.includes('Đã hủy')) {
+                className = 'status-cancelled';
+            }
+
+            if (className) {
+                cell.innerHTML = '<span class="status-tag ' + className + '">' + status + '</span>';
+            }
+        });
+
+        // Hiệu ứng khi di chuột qua hàng
+        document.querySelectorAll('table tr').forEach(function (row) {
+            row.addEventListener('mouseenter', function () {
+                this.classList.add('selected');
+            });
+
+            row.addEventListener('mouseleave', function () {
+                this.classList.remove('selected');
+            });
+        });
+    });
+</script>
 
 
