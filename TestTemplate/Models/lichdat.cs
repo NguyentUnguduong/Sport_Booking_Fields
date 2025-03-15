@@ -11,7 +11,7 @@ namespace TestTemplate.Models
 {
     using System;
     using System.Collections.Generic;
-    
+
     public partial class LichDat
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -19,8 +19,10 @@ namespace TestTemplate.Models
         {
             this.HoaDons = new HashSet<HoaDon>();
         }
-    
+
         public string MaLichDat { get; set; }
+
+        public DateTime ThoiGianTao {get; set;}
         
         public string MaKhachHang { get; set; }
         public string MaSan { get; set; }
