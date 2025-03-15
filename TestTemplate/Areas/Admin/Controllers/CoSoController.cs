@@ -95,7 +95,7 @@ namespace TestTemplate.Areas.Admin.Controllers
         [HttpPost]
         public ActionResult CapNhat(CoSo model_Edit, HttpPostedFileBase fileAnh)
         {
-            if (fileAnh.ContentLength > 0)
+            if (fileAnh?.ContentLength > 0)
             {
                 string rootFolder = Server.MapPath("/Content/img/");
                 string pathImage = rootFolder + fileAnh.FileName;

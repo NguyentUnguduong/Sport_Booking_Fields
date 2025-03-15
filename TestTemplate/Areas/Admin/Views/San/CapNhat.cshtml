@@ -12,44 +12,46 @@
     <!--lấy ra đối tượng cần cập nhật-->
     @Html.AntiForgeryToken()
 
-    <div class="form-horizontal">
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        @Html.HiddenFor(model => model.MaSan)
-        <div class="form-group">
-            <label class="control-label col-md-10 " style="margin-top: 10px">Số sân</label>
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.SoSan, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.SoSan, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label class="control-label col-md-10 " style="margin-top: 10px">Giá sân</label>
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.GiaSan, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.GiaSan, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label class="control-label col-md-10 " style="margin-top: 10px">Danh mục sân</label>
-            <div class="col-md-10">
-                <select name="MaDanhMuc" class="form-control">
-                    @foreach (var dm in db.DanhMucSans.ToList())
-                    {
-                        <option value="@dm.MaDanhMuc">@dm.MaDanhMuc</option>
-
-                    }
-                </select>
-                @Html.ValidationMessageFor(model => model.DanhMucSan.LoaiSan, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Cập nhật" class="btn btn-primary" />
-            </div>
+<div class="form-horizontal">
+    <hr />
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @Html.HiddenFor(model => model.MaSan)
+    <div class="form-group">
+        <label class="control-label col-md-10 " style="margin-top: 10px">Số sân</label>
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.SoSan, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.SoSan, "", new { @class = "text-danger" })
         </div>
     </div>
+
+    <div class="form-group">
+        <label class="control-label col-md-10 " style="margin-top: 10px">Giá sân</label>
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.GiaSan, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.GiaSan, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+ 
+
+    <div class="form-group">
+        <label class="control-label col-md-10 " style="margin-top: 10px">Danh mục sân</label>
+        <div class="col-md-10">
+            <select name="MaDanhMuc" class="form-control">
+                @foreach (var dm in db.DanhMucSans.ToList())
+                {
+                    <option value="@dm.MaDanhMuc">@dm.MaDanhMuc</option>
+
+                }
+            </select>
+            @Html.ValidationMessageFor(model => model.DanhMucSan.LoaiSan, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Cập nhật" class="btn btn-primary" />
+        </div>
+    </div>
+</div>
 }

@@ -13,6 +13,8 @@
 
     // Calculate total price
     double tongTien = giaSan * soGio;
+
+
 }
 
 <div class="container">
@@ -26,6 +28,19 @@
     <p><strong>Giá sân:</strong> @String.Format("{0:N0}", giaSan) VNĐ/giờ</p>
     <p><strong>Tổng tiền:</strong> @String.Format("{0:N0}", tongTien) VNĐ</p>
 
+    <h4 class="mt-4">Thanh toán bằng QR:</h4>
+    <div class="row">
+        <div class="col-md-6 text-center">
+            <h5>Thanh toán qua Momo</h5>
+            <img src="~/Content/img/momo.jpg" width="250" />
+        </div>
+
+        <div class="col-md-6 text-center">
+            <h5>Thanh toán qua Techcombank</h5>
+            <img src="~/Content/img/techcombank1.jpg" width="250"  />
+        </div>
+    </div>
+
     <form method="post" action="@Url.Action("XacNhanDatSan", "DatSan")">
         @Html.HiddenFor(model => model.ma_San)
         @Html.HiddenFor(model => model.ngayDatSan)
@@ -35,6 +50,21 @@
         @Html.HiddenFor(model => model.ma_KH)
         <input type="hidden" name="giaSan" value="@giaSan" />
 
+        <div class="form-group">
+            <label for="receipt"><strong>Tải lên biên lai thanh toán:</strong></label>
+            <input type="file" name="receipt" class="form-control" />
+        </div>
+
+        <div class="form-group mt-3">
+            <label for="transactionCode"><strong>Nhập mã giao dịch ngân hàng:</strong></label>
+            <input type="text" name="transactionCode" class="form-control" placeholder="Nhập mã giao dịch (nếu có)" />
+        </div>
+
+        <div class="alert alert-info mt-3" id="paymentStatus" style="display: none;">
+            Đang chờ thanh toán... Vui lòng hoàn tất thanh toán trong vòng 3 phút.
+        </div>
+
+
         <div class="row mt-4">
             <div class="col">
                 <input type="submit" name="confirmed" value="Xác nhận" class="btn btn-primary" />
@@ -43,3 +73,26 @@
         </div>
     </form>
 </div>
+
+<script>
+    document.getElementById("paymentForm").addEventListener("submit", function (e) {
+        var transactionCode = document.getElementById("transactionCode").value;
+        if (!transactionCode.trim()) {
+            e.preventDefault();
+            document.getElementById("paymentStatus").style.display = "block";
+
+            // Kiểm tra sau 3 phút
+            setTimeout(function () {
+                fetch('@Url.Action("KiemTraThanhToan", "DatSan")?maSan=@Model.ma_San')
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.thanhToan === false) {
+                            document.getElementById("paymentStatus").innerHTML = "Bạn chưa thanh toán. Đơn đặt sân đã bị huỷ.";
+                        } else {
+                            document.getElementById("paymentStatus").innerHTML = "Thanh toán thành công!";
+                        }
+                    });
+            }, 2000); // 3 phút
+        }
+    });
+</script>

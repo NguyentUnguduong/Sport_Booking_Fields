@@ -5,58 +5,122 @@
     Layout = "~/Views/Shared/Layout_HoaDon.cshtml";
 }
 
-<h2 style="margin-left: 500px">Hóa đơn</h2>
+@*<h2 style="margin-left: 500px">Hóa đơn</h2>
 
-<table class="table table-bordered" style="width: 96%; margin-left: 30px; margin-bottom: 500px">
-    <tr style="text-align: center">
-        <th>
-            <label class="control-label col-md-10 ">Mã hóa đơn</label>
-        </th>
-        <th>
-            <label class="control-label col-md-10 ">Mã lịch đặt</label>
-        </th>
-        <th>
-            <label class="control-label col-md-10 ">Mã khách hàng</label>
-        </th>
-        <th>
-            <label class="control-label col-md-10 ">Mã nhân viên</label>
-        </th>
-        <th>
-            <label class="control-label col-md-10 ">Ngày tạo</label>
-        </th>
-        <th>
-            <label class="control-label col-md-10 ">Trạng thái</label>
-        </th>
-        <th></th>
-    </tr>
-
-    @foreach (var item in Model)
-    {
+    <table class="table table-bordered" style="width: 96%; margin-left: 30px; margin-bottom: 500px">
         <tr style="text-align: center">
-            <td style="padding-top: 16px">
-                @Html.DisplayFor(modelItem => item.MaHoaDon)
-            </td>
-            <td style=" padding-top: 16px">
-                @Html.DisplayFor(modelItem => item.MaLichDat)
-            </td>
-            <td style=" padding-top: 16px">
-                @Html.DisplayFor(modelItem => item.MaKhachHang)
-            </td>
-            <td style=" padding-top: 16px">
-                @Html.DisplayFor(modelItem => item.MaNV)
-            </td>
-            <td style=" padding-top: 16px">
-                @Html.DisplayFor(modelItem => item.NgayTao)
-            </td>
-            <td style=" padding-top: 16px; font-weight:bold; color:red">
-                @Html.DisplayFor(modelItem => item.TrangThai)
-            </td>
-            <td>
-                @Html.ActionLink("Chi tiết hóa đơn", "CTHD", new { maHD = item.MaHoaDon }, new { @class = "btn btn-info" })
-            </td>
+            <th>
+                <label class="control-label col-md-10 ">Mã hóa đơn</label>
+            </th>
+            <th>
+                <label class="control-label col-md-10 ">Mã lịch đặt</label>
+            </th>
+            <th>
+                <label class="control-label col-md-10 ">Mã khách hàng</label>
+            </th>
+            <th>
+                <label class="control-label col-md-10 ">Mã nhân viên</label>
+            </th>
+            <th>
+                <label class="control-label col-md-10 ">Ngày tạo</label>
+            </th>
+            <th>
+                <label class="control-label col-md-10 ">Trạng thái</label>
+            </th>
+            <th></th>
         </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr style="text-align: center">
+                <td style="padding-top: 16px">
+                    @Html.DisplayFor(modelItem => item.MaHoaDon)
+                </td>
+                <td style=" padding-top: 16px">
+                    @Html.DisplayFor(modelItem => item.MaLichDat)
+                </td>
+                <td style=" padding-top: 16px">
+                    @Html.DisplayFor(modelItem => item.MaKhachHang)
+                </td>
+                <td style=" padding-top: 16px">
+                    @Html.DisplayFor(modelItem => item.MaNV)
+                </td>
+                <td style=" padding-top: 16px">
+                    @Html.DisplayFor(modelItem => item.NgayTao)
+                </td>
+                <td style=" padding-top: 16px; font-weight:bold; color:red">
+                    @Html.DisplayFor(modelItem => item.TrangThai)
+                </td>
+                <td>
+                    @Html.ActionLink("Chi tiết hóa đơn", "CTHD", new { maHD = item.MaHoaDon }, new { @class = "btn btn-info" })
+                </td>
+            </tr>
+        }
+
+    </table>
+
+
+*@
+
+<div class="container mt-5">
+    <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+        <div class="card-header bg-gradient text-white text-center py-4" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+            <h2 class="mb-0 fw-bold">📜 Danh Sách Hóa Đơn</h2>
+        </div>
+        <div class="card-body p-4">
+            <div class="table-responsive">
+                <table class="table table-hover table-bordered text-center align-middle shadow-sm rounded">
+                    <thead class="bg-dark text-white">
+                        <tr>
+                            <th>Mã Hóa Đơn</th>
+                            <th>Mã Lịch Đặt</th>
+                            <th>Mã Khách Hàng</th>
+                            <th>Mã Nhân Viên</th>
+                            <th>Ngày Tạo</th>
+                            <th>Trạng Thái</th>
+                            <th>Hành Động</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-light">
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td><span class="fw-bold">@Html.DisplayFor(modelItem => item.MaHoaDon)</span></td>
+                                <td>@Html.DisplayFor(modelItem => item.MaLichDat)</td>
+                                <td>@Html.DisplayFor(modelItem => item.MaKhachHang)</td>
+                                <td>@Html.DisplayFor(modelItem => item.MaNV)</td>
+                                <td>@Html.DisplayFor(modelItem => item.NgayTao)</td>
+                                <td>
+                                    <span class="badge px-3 py-2 fs-6 @(item.TrangThai == "Đã thanh toán" ? "bg-success" : "bg-danger")">
+                                        @Html.DisplayFor(modelItem => item.TrangThai)
+                                    </span>
+                                </td>
+                                <td>
+                                    @Html.ActionLink("Chi tiết hóa đơn", "CTHD", new { maHD = item.MaHoaDon }, new { @class = "btn btn-outline-primary btn-sm shadow-sm px-3 py-2 fw-bold" })
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .table-hover tbody tr:hover {
+        background-color: #f8f9fa;
+        transition: 0.3s;
     }
 
-</table>
+    .card {
+        box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+    }
 
+    .bg-gradient {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+</style>
 
+<!-- Thêm FontAwesome nếu chưa có -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">

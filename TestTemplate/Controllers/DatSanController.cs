@@ -1,10 +1,16 @@
-﻿using System;
+﻿using QRCoder;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Drawing.Imaging;
+using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using TestTemplate.Models;
+using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace TestTemplate.Controllers
 {
@@ -99,6 +105,22 @@ namespace TestTemplate.Controllers
             return RedirectToAction("XacNhanDatSan");
         }
 
+        public ActionResult GenerateQRCode(string qrText)
+{
+    using (QRCodeGenerator qrGenerator = new QRCodeGenerator())
+    using (QRCodeData qrCodeData = qrGenerator.CreateQrCode(qrText, QRCodeGenerator.ECCLevel.Q))
+    using (QRCode qrCode = new QRCode(qrCodeData))
+    {
+        using (Bitmap qrCodeImage = qrCode.GetGraphic(20))
+        {
+            using (MemoryStream stream = new MemoryStream())
+            {
+                qrCodeImage.Save(stream, ImageFormat.Png);
+                return File(stream.ToArray(), "image/png");
+            }
+        }
+    }
+}
 
         public ActionResult XacNhanDatSan(DatSan model)
         {
@@ -119,67 +141,205 @@ namespace TestTemplate.Controllers
         }
 
         [HttpPost]
-        public ActionResult XacNhanDatSan(DatSan model, double giaSan)
-        {
+        //public ActionResult XacNhanDatSan(DatSan model, double giaSan)
+        //    public async Task<ActionResult> XacNhanDatSan(DatSan model, double giaSan)
+        //    {
 
-            //var model = TempData["ThongTinDatSan"] as DatSan;
+        //        //var model = TempData["ThongTinDatSan"] as DatSan;
+        //        if (model == null)
+        //        {
+        //            // Xử lý lỗi nếu không có thông tin đặt sân
+        //            return RedirectToAction("Index");
+        //        }
+        //        int soLuongKhachHangCungSDT = db.user_KhachHang.Count(kh => kh.MaKH == model.ma_KH);
+
+        //        if (soLuongKhachHangCungSDT >= 6)
+        //        {
+        //            ModelState.AddModelError("", "Mỗi tài khoản chỉ được đặt 6 lần. Vui long chọn 1 tài khoản khác để tiếp tục!");
+        //            // Restore TempData for the view
+        //            TempData["Loaisan"] = TempData["Loaisan"] ?? "";
+        //            TempData["GiaSan"] = giaSan;
+        //            return View(model);
+        //        }
+
+        //        // kết hợp biến ngày đặt vs giờ đá
+        //        string batdau = model.ngayDatSan + " " + model.gioBatDau;
+        //        string ketthuc = model.ngayDatSan + " " + model.gioKetThuc;
+
+        //        DateTime gio_da = new DateTime();
+        //        DateTime gio_nghi = new DateTime();
+        //        DateTime.TryParse(batdau, out gio_da);
+        //        DateTime.TryParse(ketthuc, out gio_nghi);
+
+        //        // cập nhật lại nếu như có lịch đặt bị trùng nhưng trạng thái là "Đã huỷ"
+        //        //var lichdattrung = db.LichDats.Where(c => c.MaSan == model.ma_San && c.TrangThai == "Đã huỷ" && KiemTraTrungLich(c, gio_da, gio_nghi)) as LichDat;
+        //        //if (lichdattrung != null)
+        //        //{
+        //        //    lichdattrung.TrangThai = "Đã đặt";
+        //        //    lichdattrung.MaKhachHang = model.ma_KH;
+        //        //    db.SaveChanges();
+        //        //    TempData["ThongBaoDatSan"] = "Đặt sân thành công!";
+        //        //}
+        //        //// nếu không có lịch đặt trùng nào thì tạo lịch đặt mới 
+        //        //else
+        //        //{
+        //        //    string newMaSan = TimMaSanMoi();
+
+        //        //    LichDat ld_ms = new LichDat
+        //        //    {
+        //        //        MaLichDat = newMaSan,
+        //        //        MaKhachHang = model.ma_KH,
+        //        //        MaSan = model.ma_San,
+        //        //        ThoiGianBatDau = gio_da,
+        //        //        ThoiGianKetThuc = gio_nghi,
+        //        //        TrangThai = "Đã đặt"
+        //        //    };
+
+        //        //    db.LichDats.Add(ld_ms);
+        //        //    // Lưu thay đổi vào cơ sở dữ liệu
+        //        //    db.SaveChanges();
+        //        //    HoaDon();
+        //        //    TempData["ThongBaoDatSan"] = "Đặt sân thành công!";
+        //        //}
+
+        //        var danhSachLichHuy = db.LichDats
+        //.Where(c => c.MaSan == model.ma_San && c.TrangThai == "Đã huỷ")
+        //.ToList(); // Chuyển về danh sách trong bộ nhớ
+
+        //        var lichdattrung = danhSachLichHuy.FirstOrDefault(c => KiemTraTrungLich(c, gio_da, gio_nghi));
+        //        if (lichdattrung != null)
+        //        {
+        //            lichdattrung.TrangThai = model.trangThaiThanhToan ? "Đã thanh toán" : "Chờ thanh toán";
+        //            lichdattrung.MaKhachHang = model.ma_KH;
+        //            lichdattrung.ThoiGianBatDau= DateTime.Now;  // Lưu thời gian đặt sân
+        //            db.SaveChanges();
+
+        //            if (!model.trangThaiThanhToan)
+        //            {
+        //                XacNhanThanhToanSau(lichdattrung.MaLichDat);
+        //            }
+        //        }
+        //        else
+        //        {
+        //            string newMaSan = TimMaSanMoi();
+
+        //            LichDat ld_ms = new LichDat
+        //            {
+        //                MaLichDat = newMaSan,
+        //                MaKhachHang = model.ma_KH,
+        //                MaSan = model.ma_San,
+        //                ThoiGianBatDau = gio_da,
+        //                ThoiGianKetThuc = gio_nghi,
+        //                TrangThai = model.trangThaiThanhToan ? "Đã thanh toán" : "Chờ thanh toán",
+
+        //            };
+
+        //            db.LichDats.Add(ld_ms);
+        //            db.SaveChanges();
+
+        //            if (!model.trangThaiThanhToan)
+        //            {
+        //                XacNhanThanhToanSau(ld_ms.MaLichDat);
+        //            }
+        //        }
+        //        // Chuyển hướng sau khi lưu vào cơ sở dữ liệu
+        //        return RedirectToAction("Index", "Home");
+        //    }
+        public async Task<ActionResult> XacNhanDatSan(DatSan model, double giaSan, HttpPostedFileBase receipt, string transactionCode)
+        {
             if (model == null)
             {
-                // Xử lý lỗi nếu không có thông tin đặt sân
                 return RedirectToAction("Index");
             }
+
             int soLuongKhachHangCungSDT = db.user_KhachHang.Count(kh => kh.MaKH == model.ma_KH);
 
             if (soLuongKhachHangCungSDT >= 6)
             {
-                ModelState.AddModelError("", "Mỗi tài khoản chỉ được đặt 6 lần. Vui long chọn 1 tài khoản khác để tiếp tục!");
-                // Restore TempData for the view
+                ModelState.AddModelError("", "Mỗi tài khoản chỉ được đặt 6 lần. Vui lòng chọn tài khoản khác!");
                 TempData["Loaisan"] = TempData["Loaisan"] ?? "";
                 TempData["GiaSan"] = giaSan;
                 return View(model);
             }
 
-            // kết hợp biến ngày đặt vs giờ đá
+            // Kết hợp ngày và giờ để tạo thời gian bắt đầu & kết thúc
             string batdau = model.ngayDatSan + " " + model.gioBatDau;
             string ketthuc = model.ngayDatSan + " " + model.gioKetThuc;
 
-            DateTime gio_da = new DateTime();
-            DateTime gio_nghi = new DateTime();
-            DateTime.TryParse(batdau, out gio_da);
-            DateTime.TryParse(ketthuc, out gio_nghi);
+            if (!DateTime.TryParse(batdau, out DateTime gio_da) || !DateTime.TryParse(ketthuc, out DateTime gio_nghi))
+            {
+                ModelState.AddModelError("", "Lỗi định dạng thời gian, vui lòng kiểm tra lại!");
+                return View(model);
+            }
 
-            // cập nhật lại nếu như có lịch đặt bị trùng nhưng trạng thái là "Đã huỷ"
-            var lichdattrung = db.LichDats.Where(c => c.MaSan == model.ma_San && c.TrangThai == "Đã huỷ" && KiemTraTrungLich(c, gio_da, gio_nghi)) as LichDat;
+            // Kiểm tra lịch đặt bị trùng nhưng trạng thái "Đã hủy"
+            var lichdattrung = db.LichDats
+                .Where(c => c.MaSan == model.ma_San && c.TrangThai == "Đã huỷ")
+                .FirstOrDefault(c => c.ThoiGianBatDau < gio_nghi && c.ThoiGianKetThuc > gio_da);
+
             if (lichdattrung != null)
             {
                 lichdattrung.TrangThai = "Đã đặt";
                 lichdattrung.MaKhachHang = model.ma_KH;
-                db.SaveChanges();
+                await db.SaveChangesAsync();
                 TempData["ThongBaoDatSan"] = "Đặt sân thành công!";
+                return RedirectToAction("Index", "Home");
             }
-            // nếu không có lịch đặt trùng nào thì tạo lịch đặt mới 
-            else
+
+            // Kiểm tra thanh toán
+            bool daThanhToan = false;
+            if (receipt != null || !string.IsNullOrEmpty(transactionCode))
             {
-                string newMaSan = TimMaSanMoi();
-
-                LichDat ld_ms = new LichDat
-                {
-                    MaLichDat = newMaSan,
-                    MaKhachHang = model.ma_KH,
-                    MaSan = model.ma_San,
-                    ThoiGianBatDau = gio_da,
-                    ThoiGianKetThuc = gio_nghi,
-                    TrangThai = "Đã đặt"
-                };
-
-                db.LichDats.Add(ld_ms);
-                // Lưu thay đổi vào cơ sở dữ liệu
-                db.SaveChanges();
-                HoaDon();
-                TempData["ThongBaoDatSan"] = "Đặt sân thành công!";
+                daThanhToan = true;
             }
-            // Chuyển hướng sau khi lưu vào cơ sở dữ liệu
+
+            // Tạo lịch đặt mới
+            string newMaSan = TimMaSanMoi();
+            LichDat lichMoi = new LichDat
+            {
+                MaLichDat = newMaSan,
+                MaKhachHang = model.ma_KH,
+                MaSan = model.ma_San,
+                ThoiGianBatDau = gio_da,
+                ThoiGianKetThuc = gio_nghi,
+                TrangThai = daThanhToan ? "Đã thanh toán" : "Chờ thanh toán",
+                ThoiGianTao = DateTime.Now
+            };
+
+            db.LichDats.Add(lichMoi);
+            await db.SaveChangesAsync();
+            HoaDon();
+
+            if (!daThanhToan)
+            {
+                // Đặt timeout 3 phút để kiểm tra lại trạng thái thanh toán
+                Task.Delay(TimeSpan.FromMinutes(3)).ContinueWith(async _ =>
+                {
+                    var lichKiemTra = db.LichDats.FirstOrDefault(l => l.MaLichDat == newMaSan);
+                    if (lichKiemTra != null && lichKiemTra.TrangThai == "Chờ thanh toán")
+                    {
+                        lichKiemTra.TrangThai = "Chưa thanh toán";
+                        await db.SaveChangesAsync();
+                    }
+                });
+            }
+
+            TempData["ThongBaoDatSan"] = "Đặt sân thành công!";
             return RedirectToAction("Index", "Home");
+        }
+
+
+
+        private async void XacNhanThanhToanSau(string maLichDat)
+        {
+            await Task.Delay(TimeSpan.FromMinutes(3)); // Chờ 3 phút
+
+            var lichDat = db.LichDats.FirstOrDefault(ld => ld.MaLichDat == maLichDat);
+            if (lichDat != null && lichDat.TrangThai == "Chờ thanh toán")
+            {
+                lichDat.TrangThai = "Chưa thanh toán";
+                db.SaveChanges();
+            }
         }
 
         // Phương thức để tạo mã sân mới

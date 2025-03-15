@@ -59,8 +59,10 @@ Layout = "~/Areas/Admin/Views/Shared/LayoutAdmin.cshtml";
 </tr>
     }
 
-</table>
+</table>    
 
 <div class="dlink">
+    @*@Html.PagedListPager(Model, page => Url.Action("HoaDon", new { page = page }))*@
     @Html.PagedListPager(Model, page => Url.Action("HoaDon", new { page = page }))
+
 </div>

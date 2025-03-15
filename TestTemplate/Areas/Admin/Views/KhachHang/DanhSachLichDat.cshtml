@@ -8,6 +8,214 @@
     TestTemplate.Models.QLDSEntities db = new TestTemplate.Models.QLDSEntities();
 }
 
+<style>
+
+    h2 {
+    font-size: 28px;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 25px;
+    position: relative;
+    padding-bottom: 10px;
+}
+
+h2:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 70px;
+    height: 3px;
+    background: #3498db;
+}
+
+/* Bảng dữ liệu */
+.table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: white;
+    box-shadow: 0 1px 15px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 30px;
+}
+
+.table th {
+    background-color: #3498db;
+    color: white;
+    padding: 14px 20px;
+    text-align: left;
+    font-weight: 600;
+    border: none;
+}
+
+.table td {
+    padding: 12px 20px !important; /* Ghi đè padding inline */
+    border-bottom: 1px solid #e9ecef;
+    vertical-align: middle;
+}
+
+.table tr:last-child td {
+    border-bottom: none;
+}
+
+.table tr:hover {
+    background-color: #f1f8ff;
+}
+
+/* Hiển thị trạng thái với màu sắc trực quan */
+td:last-child {
+    font-weight: 500;
+}
+
+/* Màu sắc cho các trạng thái khác nhau */
+td:last-child:contains("Đã xác nhận") {
+    color: #27ae60;
+}
+
+td:last-child:contains("Chờ xác nhận") {
+    color: #f39c12;
+}
+
+td:last-child:contains("Đã hủy") {
+    color: #e74c3c;
+}
+
+td:last-child:contains("Hoàn thành") {
+    color: #3498db;
+}
+
+/* Định dạng ngày giờ */
+td:nth-child(5), td:nth-child(6) {
+    white-space: nowrap;
+    font-family: monospace;
+    font-size: 14px;
+}
+
+/* Thẻ trạng thái */
+.status-tag {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+/* Các loại trạng thái */
+.status-confirmed {
+    background-color: rgba(39, 174, 96, 0.15);
+    color: #27ae60;
+}
+
+.status-pending {
+    background-color: rgba(243, 156, 18, 0.15);
+    color: #f39c12;
+}
+
+.status-cancelled {
+    background-color: rgba(231, 76, 60, 0.15);
+    color: #e74c3c;
+}
+
+.status-completed {
+    background-color: rgba(52, 152, 219, 0.15);
+    color: #3498db;
+}
+
+/* Phân trang */
+.dlink {
+    display: flex;
+    justify-content: center;
+    margin: 30px 0;
+}
+
+.pagination {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.pagination li {
+    display: inline-block;
+}
+
+.pagination li a,
+.pagination li span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+    height: 40px;
+    padding: 0 12px;
+    background-color: white;
+    color: #3498db;
+    text-decoration: none;
+    border: 1px solid #e9ecef;
+    border-left: none;
+    transition: all 0.2s ease;
+}
+
+.pagination li:first-child a {
+    border-left: 1px solid #e9ecef;
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+}
+
+.pagination li:last-child a {
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+
+.pagination li.active a {
+    background-color: #3498db;
+    color: white;
+    cursor: default;
+}
+
+.pagination li a:hover:not(.active) {
+    background-color: #e9ecef;
+}
+
+/* Responsive styling */
+
+}
+
+
+/* Thêm JavaScript để tự động áp dụng thẻ trạng thái */
+/* Đặt đoạn mã này trong một thẻ script ở cuối trang */
+/*
+document.addEventListener('DOMContentLoaded', function() {
+    var statusCells = document.querySelectorAll('td:last-child');
+    statusCells.forEach(function(cell) {
+        var status = cell.textContent.trim();
+        var className = '';
+
+        if (status.includes('xác nhận')) {
+            className = 'status-confirmed';
+        } else if (status.includes('Chờ')) {
+            className = 'status-pending';
+        } else if (status.includes('hủy')) {
+            className = 'status-cancelled';
+        } else if (status.includes('thành')) {
+            className = 'status-completed';
+        }
+
+        if (className) {
+            cell.innerHTML = '<span class="status-tag ' + className + '">' + status + '</span>';
+        }
+    });
+});
+*
+
+
+</style>
+
 <h2>Danh sách lịch đặt</h2>
 
 <table class="table table-bordered">
