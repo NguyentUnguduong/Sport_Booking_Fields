@@ -1,53 +1,32 @@
-﻿# Sử dụng hình ảnh .NET ASP.NET làm base
-FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
-WORKDIR /app
-EXPOSE 80
+﻿# Sử dụng Windows Container vì đây là ASP.NET Framework (không phải .NET Core)
+# Image chứa IIS + .NET Framework Runtime
+FROM mcr.microsoft.com/dotnet/framework/aspnet:4.8 AS base
+WORKDIR /inetpub/wwwroot
 
-# Dùng SDK để build dự án
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
-WORKDIR /src
-COPY ["TestTemplate/TestTemplate.csproj", "TestTemplate/"]
-RUN dotnet restore "TestTemplate/TestTemplate.csproj"
-COPY . .
-WORKDIR "/src/TestTemplate"
-RUN dotnet build "TestTemplate.csproj" -c Release -o /app/build
-
-# Publish ứng dụng
-FROM build AS publish
-RUN dotnet publish "TestTemplate.csproj" -c Release -o /app/publish
-
-# Tạo container cuối cùng
-FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS final
-WORKDIR /app
-COPY --from=publish /app/publish .# Sử dụng hình ảnh ASP.NET làm base
-FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
-WORKDIR /app
-EXPOSE 80
-EXPOSE 443  # Nếu chạy HTTPS
-
-# Dùng SDK để build dự án
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+# Image chứa đầy đủ SDK để build ứng dụng
+FROM mcr.microsoft.com/dotnet/framework/sdk:4.8 AS build
 WORKDIR /src
 
-# Copy file project trước để cache dependencies (tăng tốc build)
-COPY TestTemplate/TestTemplate.csproj TestTemplate/
-RUN dotnet restore "TestTemplate/TestTemplate.csproj"
+# Copy file project để tối ưu cache dependencies
+COPY TestTemplate.csproj ./
+RUN nuget restore TestTemplate.csproj
 
-# Copy toàn bộ source code
-COPY . .
+# Copy toàn bộ source code vào container
+COPY . ./TestTemplate
+WORKDIR /src/TestTemplate
 
-# Build ứng dụng
-WORKDIR "/src/TestTemplate"
-RUN dotnet build "TestTemplate.csproj" -c Release -o /app/build
+# Build ứng dụng bằng MSBuild
+RUN msbuild TestTemplate.csproj /p:Configuration=Release /p:OutputPath=c:\out
 
-# Publish ứng dụng
-FROM build AS publish
-RUN dotnet publish "TestTemplate.csproj" -c Release -o /app/publish
-
-# Tạo container cuối cùng
+# Final runtime container dựa trên IIS + .NET Framework
 FROM base AS final
-WORKDIR /app
-COPY --from=publish /app/publish .
+WORKDIR /inetpub/wwwroot
 
-# Chạy ứng dụng
-ENTRYPOINT ["dotnet", "TestTemplate.dll"]
+# Copy kết quả build từ stage build sang container chạy chính
+COPY --from=build C:/out .
+
+# Mở cổng HTTP
+EXPOSE 80
+
+# Chạy IIS
+ENTRYPOINT ["C:\\ServiceMonitor.exe", "w3svc"]
