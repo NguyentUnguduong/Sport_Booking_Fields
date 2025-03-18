@@ -7,15 +7,15 @@ EXPOSE 80
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 
-# Copy file .csproj trước để cache restore dependencies
+# Copy file .csproj trước để cache dependencies
 COPY TestTemplate/TestTemplate.csproj TestTemplate/
 RUN dotnet restore "TestTemplate/TestTemplate.csproj"
 
-# Copy toàn bộ source code
+# Copy toàn bộ source code vào container
 COPY . .
 WORKDIR "/src/TestTemplate"
 
-# Build & Publish luôn trong một bước để tối ưu
+# Build & Publish ứng dụng
 RUN dotnet publish "TestTemplate.csproj" -c Release -o /app/publish --no-restore
 
 # Final runtime container
