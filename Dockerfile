@@ -1,17 +1,27 @@
-# Sử dụng Windows-based .NET Framework SDK 6.0
-FROM mcr.microsoft.com/dotnet/framework/sdk:6.0 AS build
-WORKDIR /src
-COPY ["TestTemplate/TestTemplate.csproj", "TestTemplate/"]
-RUN nuget restore "TestTemplate/TestTemplate.csproj"
-COPY . .
-RUN msbuild "TestTemplate/TestTemplate.csproj" /p:Configuration=Release /p:OutputPath=/app/build
-
-# Stage 2: Publish
-FROM build AS publish
-RUN msbuild "TestTemplate/TestTemplate.csproj" /p:Configuration=Release /p:OutputPath=/app/publish
-
-# Runtime Container (Windows-based)
-FROM mcr.microsoft.com/dotnet/framework/aspnet:6.0 AS final
+# Base image để chạy ứng dụng
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
 WORKDIR /app
-COPY --from=publish /app/publish .
-ENTRYPOINT ["TestTemplate.exe"]
+EXPOSE 80
+
+# Image chứa SDK để build code
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+WORKDIR /src
+
+# Copy file .csproj trước để cache restore dependencies
+COPY TestTemplate/TestTemplate.csproj TestTemplate/
+RUN dotnet restore "TestTemplate/TestTemplate.csproj"
+
+# Copy toàn bộ source code
+COPY . .
+WORKDIR "/src/TestTemplate"
+
+# Build & Publish luôn trong một bước để tối ưu
+RUN dotnet publish "TestTemplate.csproj" -c Release -o /app/publish --no-restore
+
+# Final runtime container
+FROM base AS final
+WORKDIR /app
+COPY --from=build /app/publish .
+
+# Chạy ứng dụng
+ENTRYPOINT ["dotnet", "TestTemplate.dll"]
