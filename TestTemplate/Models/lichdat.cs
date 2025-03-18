@@ -19,10 +19,9 @@ namespace TestTemplate.Models
         {
             this.HoaDons = new HashSet<HoaDon>();
         }
-    
-        public string MaLichDat { get; set; }
 
         public DateTime ThoiGianTao { get; set; }
+        public string MaLichDat { get; set; }
         public string MaKhachHang { get; set; }
         public string MaSan { get; set; }
         public Nullable<System.DateTime> ThoiGianBatDau { get; set; }
